@@ -1,0 +1,160 @@
+/* GLOBAL ---------------------------------------------------- */
+* {
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+  transition: 0.2s;
+}
+
+body.dark {
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+body.light {
+  background: #f1f5ff;
+  color: #1e293b;
+}
+
+.calc {
+  width: 340px;
+  max-width: 90vw;
+  margin: 30px auto;
+  padding: 16px;
+  border-radius: 12px;
+}
+
+body.dark .calc {
+  background: #1e293b;
+}
+
+body.light .calc {
+  background: white;
+  border: 1px solid #ccd7f2;
+}
+
+/* TOP BAR ---------------------------------------------------- */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.theme-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+/* DISPLAY ---------------------------------------------------- */
+.display {
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 14px;
+  min-height: 60px;
+}
+
+body.dark .display {
+  background: #0b1220;
+}
+
+body.light .display {
+  background: #e8edff;
+}
+
+.exp {
+  min-height: 18px;
+  opacity: 0.7;
+  text-align: right;
+  font-size: 14px;
+}
+
+.res {
+  font-size: 34px;
+  font-weight: 700;
+  text-align: right;
+}
+
+/* BUTTONS ---------------------------------------------------- */
+.keys {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.keys button {
+  padding: 15px 0;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transform: translateY(0);
+}
+
+/* Button Themes */
+body.dark .keys button {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+body.dark .keys button:hover {
+  background: #334155;
+}
+
+body.light .keys button {
+  background: #e8edff;
+  color: #1e293b;
+}
+body.light .keys button:hover {
+  background: #cad5ff;
+}
+
+/* Click Animation */
+.keys button:active {
+  transform: translateY(2px);
+}
+
+/* Special equal button */
+.equal {
+  background: #2563eb !important;
+  color: white !important;
+}
+
+/* HISTORY ---------------------------------------------------- */
+.history {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 240px;
+  max-height: 60vh;
+  padding: 12px;
+  border-radius: 10px;
+  overflow-y: auto;
+}
+
+.hidden {
+  display: none;
+}
+
+body.dark .history {
+  background: #0f172a;
+  border: 1px solid #24324a;
+}
+
+body.light .history {
+  background: white;
+  border: 1px solid #bfd3ff;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+#history-list div {
+  padding: 5px 0;
+  border-bottom: 1px dashed #334155;
+  font-size: 13px;
+}

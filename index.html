@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kalkulator Web - Sesuai Modul</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="dark">
+
+  <main class="calc">
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div>Kalkulator Interaktif</div>
+      <button id="theme-toggle" class="theme-btn">Tema</button>
+    </div>
+
+    <!-- DISPLAY -->
+    <div class="display">
+      <div id="expression" class="exp"></div>
+      <div id="result" class="res">0</div>
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="keys">
+
+      <!-- MEMORY -->
+      <button data-act="mc">MC</button>
+      <button data-act="mr">MR</button>
+      <button data-act="mplus">M+</button>
+      <button data-act="mminus">M-</button>
+
+      <!-- CLEAR -->
+      <button data-act="clear">C</button>
+      <button data-act="ce">CE</button>
+      <button data-act="history">HIST</button>
+      <button data-act="equals" class="equal">=</button>
+
+      <!-- OPERATIONS -->
+      <button data-val="7">7</button>
+      <button data-val="8">8</button>
+      <button data-val="9">9</button>
+      <button data-val="/">÷</button>
+
+      <button data-val="4">4</button>
+      <button data-val="5">5</button>
+      <button data-val="6">6</button>
+      <button data-val="*">×</button>
+
+      <button data-val="1">1</button>
+      <button data-val="2">2</button>
+      <button data-val="3">3</button>
+      <button data-val="-">−</button>
+
+      <button data-val="0">0</button>
+      <button data-val=".">.</button>
+      <button data-act="ans">ANS</button>
+      <button data-val="+">+</button>
+
+    </div>
+
+  </main>
+
+  <!-- HISTORY POPUP -->
+  <section id="history-popup" class="history hidden">
+    <div class="history-header">
+      <span>History (5 terakhir)</span>
+      <button id="close-history">×</button>
+    </div>
+    <div id="history-list"></div>
+  </section>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
