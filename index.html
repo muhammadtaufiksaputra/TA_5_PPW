@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Kalkulator Web - Sesuai Modul</title>
+  <title>Kalkulator Scientific Web</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="dark">
@@ -12,7 +12,7 @@
 
     <!-- TOP BAR -->
     <div class="topbar">
-      <div>Kalkulator Interaktif</div>
+      <div>Kalkulator Scientific</div>
       <button id="theme-toggle" class="theme-btn">Tema</button>
     </div>
 
@@ -22,8 +22,30 @@
       <div id="result" class="res">0</div>
     </div>
 
+    <!-- MODE -->
+    <div class="mode-row">
+      <button id="mode-toggle" class="mode-btn">DEG</button>
+      <button id="shift-toggle" class="mode-btn">SHIFT</button>
+    </div>
+
     <!-- BUTTONS -->
     <div class="keys">
+
+      <!-- FIRST SCIENTIFIC ROW -->
+      <button data-fn="sin">sin</button>
+      <button data-fn="cos">cos</button>
+      <button data-fn="tan">tan</button>
+      <button data-fn="log">log</button>
+      <button data-fn="ln">ln</button>
+      <button data-fn="sqrt">√</button>
+
+      <!-- SHIFT FUNCTIONS -->
+      <button data-fn="asin" class="shift-alt">sin⁻¹</button>
+      <button data-fn="acos" class="shift-alt">cos⁻¹</button>
+      <button data-fn="atan" class="shift-alt">tan⁻¹</button>
+      <button data-fn="pow2">x²</button>
+      <button data-fn="pow">xʸ</button>
+      <button data-fn="fact">n!</button>
 
       <!-- MEMORY -->
       <button data-act="mc">MC</button>
@@ -37,7 +59,7 @@
       <button data-act="history">HIST</button>
       <button data-act="equals" class="equal">=</button>
 
-      <!-- OPERATIONS -->
+      <!-- NUMBERS & OPS -->
       <button data-val="7">7</button>
       <button data-val="8">8</button>
       <button data-val="9">9</button>
@@ -58,14 +80,21 @@
       <button data-act="ans">ANS</button>
       <button data-val="+">+</button>
 
-    </div>
+      <!-- CONSTANTS -->
+      <button data-val="pi">π</button>
+      <button data-val="e">e</button>
+      <button data-act="recip">1/x</button>
+      <button data-act="open">(</button>
+      <button data-act="close">)</button>
+      <button data-act="sign">±</button>
 
+    </div>
   </main>
 
   <!-- HISTORY POPUP -->
   <section id="history-popup" class="history hidden">
     <div class="history-header">
-      <span>History (5 terakhir)</span>
+      <span>History</span>
       <button id="close-history">×</button>
     </div>
     <div id="history-list"></div>
