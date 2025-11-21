@@ -1,6 +1,5 @@
 const expEl   = document.getElementById("expression");
 const resEl   = document.getElementById("result");
-const histBox = document.getElementById("history");
 const histList = document.getElementById("history-list");
 const histPopup = document.getElementById("history-popup");
 
@@ -8,129 +7,201 @@ let expr = "";
 let ans = 0;
 let memory = 0;
 let history = [];
+let mode = "DEG";
+let shift = false;
 
-/* UPDATE DISPLAY */
+/* --------------------------------------------------
+  DISPLAY UPDATE
+-------------------------------------------------- */
 function update() {
   expEl.textContent = expr;
   if (!expr) resEl.textContent = ans;
 }
 
-/* ADD CHARACTER */
-function add(v) {
-  expr += v;
-  update();
-}
-
-/* CE (Backspace) */
-function ce() {
-  expr = expr.slice(0, -1);
-  update();
-}
-
-/* C (Clear All) */
-function clearAll() {
-  expr = "";
-  update();
-}
-
-/* SAVE HISTORY (max 5) */
-function saveHistory(text) {
-  history.unshift(text);
+/* --------------------------------------------------
+  HISTORY (MAX 5)
+-------------------------------------------------- */
+function saveHist(t) {
+  history.unshift(t);
   if (history.length > 5) history.pop();
-
-  renderHistory();
+  renderHist();
 }
 
-function renderHistory() {
+function renderHist() {
   histList.innerHTML = "";
   history.forEach(h => {
-    const div = document.createElement("div");
+    let div = document.createElement("div");
     div.textContent = h;
     histList.appendChild(div);
   });
 }
 
-/* EVALUATE EXPRESSION */
-function evaluateExpr() {
-  try {
-    let calc = expr.replace(/×/g, "*").replace(/÷/g, "/");
+/* --------------------------------------------------
+  BASIC ADD / DELETE
+-------------------------------------------------- */
+function add(v) { expr += v; update(); }
+function ce() { expr = expr.slice(0, -1); update(); }
+function clearAll() { expr = ""; update(); }
 
-    let result = Function(`return ${calc}`)();
+/* --------------------------------------------------
+  PARSER DAN EVALUATOR SCIENTIFIC
+-------------------------------------------------- */
+
+function evalSci() {
+  try {
+    let cleaned = expr
+      .replace(/÷/g, "/")
+      .replace(/×/g, "*")
+      .replace(/pi/g, "Math.PI")
+      .replace(/e/g, "Math.E");
+
+    // handle factorial
+    cleaned = cleaned.replace(/(\d+)!/g, "fact($1)");
+
+    function rad(x) {
+      return mode === "DEG" ? (x * Math.PI / 180) : x;
+    }
+
+    const env = {
+      sin : x => Math.sin(rad(x)),
+      cos : x => Math.cos(rad(x)),
+      tan : x => Math.tan(rad(x)),
+      asin: x => (mode === "DEG" ? Math.asin(x)*180/Math.PI : Math.asin(x)),
+      acos: x => (mode === "DEG" ? Math.acos(x)*180/Math.PI : Math.acos(x)),
+      atan: x => (mode === "DEG" ? Math.atan(x)*180/Math.PI : Math.atan(x)),
+      ln  : Math.log,
+      log : Math.log10,
+      sqrt: Math.sqrt,
+      pow : (a,b)=> Math.pow(a,b),
+      fact: n => {
+        if (n < 0 || String(n).includes(".")) throw "Domain";
+        let r=1; for (let i=2;i<=n;i++) r*=i; return r;
+      },
+      inv : x => 1/x
+    };
+
+    let result = Function("env", `with(env){ return ${cleaned} }`)(env);
 
     if (!isFinite(result)) throw "DIV0";
 
     ans = result;
     resEl.textContent = result;
-    saveHistory(`${expr} = ${result}`);
+    saveHist(`${expr} = ${result}`);
     expr = "";
     update();
 
-  } catch (e) {
+  } catch(e){
     resEl.textContent = "Error";
   }
 }
 
-/* MEMORY */
+/* --------------------------------------------------
+  MEMORY
+-------------------------------------------------- */
 const mem = {
-  mc  : () => memory = 0,
-  mr  : () => add(String(memory)),
-  mplus : () => memory += (expr ? eval(expr) : ans),
+  mc: () => memory = 0,
+  mr: () => add(String(memory)),
+  mplus: () => memory += (expr ? eval(expr) : ans),
   mminus: () => memory -= (expr ? eval(expr) : ans)
 };
 
-/* BUTTON ACTIONS */
+/* --------------------------------------------------
+  BUTTON HANDLING
+-------------------------------------------------- */
 document.querySelectorAll("button").forEach(btn => {
   btn.addEventListener("click", () => {
 
-    const val = btn.dataset.val;
+    const v = btn.dataset.val;
     const act = btn.dataset.act;
+    const fn = btn.dataset.fn;
 
-    // number & operator
-    if (val) return add(val);
+    // angka & operator
+    if (v) return add(v);
 
-    // actions
-    switch (act) {
+    // scientific function
+    if (fn) {
+      add(fn + "(");
+      return;
+    }
+
+    // ACTION
+    switch(act) {
       case "clear": return clearAll();
       case "ce": return ce();
-      case "equals": return evaluateExpr();
+      case "equals": return evalSci();
       case "ans": return add(String(ans));
+
+      case "recip": add("inv("); return;
+      case "open": add("("); return;
+      case "close": add(")"); return;
+
       case "mc":
       case "mr":
-      case "mminus":
       case "mplus":
+      case "mminus":
         mem[act]();
-        break;
+        return;
+
       case "history":
         histPopup.classList.remove("hidden");
-        break;
+        return;
+
+      case "sign":
+        expr = `(-1*(${expr}))`;
+        update();
+        return;
     }
+
   });
 });
 
-/* CLOSE HISTORY */
+/* CLOSE HIST */
 document.getElementById("close-history").onclick = () => {
   histPopup.classList.add("hidden");
 };
 
-/* KEYBOARD SUPPORT */
+/* --------------------------------------------------
+  MODE DEG / RAD
+-------------------------------------------------- */
+document.getElementById("mode-toggle").onclick = () => {
+  mode = mode === "DEG" ? "RAD" : "DEG";
+  document.getElementById("mode-toggle").textContent = mode;
+};
+
+/* --------------------------------------------------
+  SHIFT SWITCH
+-------------------------------------------------- */
+document.getElementById("shift-toggle").onclick = () => {
+  shift = !shift;
+  document.querySelectorAll(".shift-alt").forEach(btn=>{
+    btn.style.display = shift ? "inline-block" : "none";
+  });
+};
+
+/* --------------------------------------------------
+  KEYBOARD SUPPORT
+-------------------------------------------------- */
 window.addEventListener("keydown", e => {
   const k = e.key;
 
-  if (/[0-9]/.test(k)) return add(k);
-  if (["+", "-", "*", "/"].includes(k)) return add(k);
-  if (k === ".") return add(".");
-  if (k === "Enter") return evaluateExpr();
-  if (k === "Backspace") return ce();
-  if (k === "Escape") return clearAll();
+  if (/[0-9]/.test(k)) add(k);
+  if (["+", "-", "*", "/"].includes(k)) add(k);
+  if (k === ".") add(".");
+  if (k === "Enter") evalSci();
+  if (k === "Backspace") ce();
+  if (k === "Escape") clearAll();
 });
 
-/* THEME TOGGLE */
+/* --------------------------------------------------
+  THEME SWITCH
+-------------------------------------------------- */
 document.getElementById("theme-toggle").onclick = () => {
-  if (document.body.classList.contains("dark")) {
-    document.body.className = "light";
-  } else {
-    document.body.className = "dark";
-  }
+  document.body.classList.toggle("dark");
+  document.body.classList.toggle("light");
 };
 
+/* INIT */
 update();
+
+/* By default, hide the inverse row */
+document.querySelectorAll(".shift-alt").forEach(btn => btn.style.display = "none");
